@@ -1,0 +1,87 @@
+<section class="card">
+  <div class="card-header">
+    <div>
+      <p class="eyebrow">Stap 1</p>
+      <h2>Schoonmaak registreren</h2>
+      <p>Scan de QR-code of vul de appartementcode in om een activiteit vast te leggen.</p>
+    </div>
+  </div>
+
+  <% if (errors && errors.length) { %>
+    <div class="alert alert-error">
+      <p>Controleer de volgende velden:</p>
+      <ul>
+        <% errors.forEach((error) => { %>
+          <li><%= error %></li>
+        <% }) %>
+      </ul>
+    </div>
+  <% } %>
+
+  <% if (success) { %>
+    <div class="alert alert-success">De activiteit is opgeslagen.</div>
+  <% } %>
+
+  <form method="POST" action="/register-cleaning" class="form-grid">
+    <div class="form-group">
+      <label for="apartmentCode">Appartementcode</label>
+      <input
+        type="text"
+        id="apartmentCode"
+        name="apartmentCode"
+        value="<%= apartmentCode || '' %>"
+        placeholder="Bijv. A-101"
+        required
+      />
+      <% if (apartment) { %>
+        <p class="muted">Geselecteerd appartement: <strong><%= apartment.building %> - <%= apartment.number %></strong></p>
+      <% } else { %>
+        <p class="muted">Geen appartement gevonden. Gebruik een geldige QR-code of vul handmatig in.</p>
+      <% } %>
+    </div>
+
+    <div class="form-group">
+      <label for="date">Datum</label>
+      <input type="date" id="date" name="date" value="<%= formValues.date %>" required />
+    </div>
+
+    <div class="form-group">
+      <label for="activity_type">Type activiteit</label>
+      <select id="activity_type" name="activity_type" required>
+        <% activityTypes.forEach((type) => { %>
+          <option value="<%= type %>" <%= formValues.activity_type === type ? 'selected' : '' %>><%= type %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="cleaner_name">Naam / ID schoonmaker</label>
+      <input
+        type="text"
+        id="cleaner_name"
+        name="cleaner_name"
+        value="<%= formValues.cleaner_name %>"
+        placeholder="Bijv. Fatima"
+        required
+      />
+    </div>
+
+    <div class="form-group" id="hoursGroup">
+      <label for="hours_worked">Gewerkte uren (alleen bij oplevering)</label>
+      <input
+        type="number"
+        step="0.25"
+        min="0"
+        id="hours_worked"
+        name="hours_worked"
+        value="<%= formValues.hours_worked %>"
+        placeholder="Bijv. 2.5"
+      />
+      <p class="muted">Vul dit alleen in bij opleveringsschoonmaak.</p>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Opslaan</button>
+    </div>
+  </form>
+</section>

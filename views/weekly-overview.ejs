@@ -1,0 +1,71 @@
+<section class="card">
+  <div class="card-header">
+    <div>
+      <p class="eyebrow">Stap 2</p>
+      <h2>Weekoverzicht</h2>
+      <p>Bekijk alle geregistreerde activiteiten voor de gekozen week.</p>
+    </div>
+  </div>
+
+  <form method="GET" action="/weekly-overview" class="filters">
+    <div class="form-group">
+      <label for="startDate">Startdatum van de week</label>
+      <input type="date" id="startDate" name="startDate" value="<%= filters.startDate %>" />
+      <p class="muted">Wordt altijd naar maandag afgerond.</p>
+    </div>
+    <button type="submit" class="btn">Vernieuw overzicht</button>
+  </form>
+
+  <div class="summary">
+    <p><strong>Periode:</strong> <%= formatDisplayDate(range.start) %> t/m <%= formatDisplayDate(range.end) %></p>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <span class="label">Reguliere schoonmaak</span>
+        <span class="value"><%= totals.totalsByType['REGULIERE_SCHOONMAAK'] || 0 %></span>
+      </div>
+      <div class="summary-item">
+        <span class="label">Opleveringsschoonmaak</span>
+        <span class="value"><%= totals.totalsByType['OPLEVERINGSSCHOONMAAK'] || 0 %></span>
+      </div>
+      <div class="summary-item">
+        <span class="label">Kranen doorspoelen</span>
+        <span class="value"><%= totals.totalsByType['KRANEN_DOORSPOELEN'] || 0 %></span>
+      </div>
+      <div class="summary-item">
+        <span class="label">Totaal uren oplevering</span>
+        <span class="value"><%= (totals.totalHours || 0).toFixed(2) %></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Appartement</th>
+          <th>Type</th>
+          <th>Schoonmaker</th>
+          <th>Uren</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (!activities.length) { %>
+          <tr>
+            <td colspan="5" class="muted">Geen activiteiten gevonden in deze periode.</td>
+          </tr>
+        <% } else { %>
+          <% activities.forEach((activity) => { %>
+            <tr>
+              <td><%= formatDisplayDate(activity.date) %></td>
+              <td><%= activity.building %> - <%= activity.number %> (<%= activity.apartment_code %>)</td>
+              <td><%= activity.activity_type %></td>
+              <td><%= activity.cleaner_name %></td>
+              <td><%= activity.activity_type === 'OPLEVERINGSSCHOONMAAK' && activity.hours_worked ? Number(activity.hours_worked).toFixed(2) : '-' %></td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>
